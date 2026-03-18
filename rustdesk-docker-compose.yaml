@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  rustdesk-hbbs:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbs
+    network_mode: "host"
+    # Passe die Domain und den Key an
+    command: hbbs -r rustdesk.example.com:21117 -k <DEIN_PUBKEY>
+    volumes:
+      - rustdesk-hbbs-data:/root
+    restart: unless-stopped
+
+  rustdesk-hbbr:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbr
+    network_mode: "host"
+    command: hbbr -k <DEIN_PUBKEY>
+    volumes:
+      - rustdesk-hbbr-data:/root
+    restart: unless-stopped
+
+  rustdesk-api:
+    image: lejianwen/rustdesk-api:latest
+    container_name: rustdesk-api
+    network_mode: "host"
+    environment:
+      - TZ=Europe/Vienna
+      - RUSTDESK_API_RUSTDESK_ID_SERVER=127.0.0.1:21116
+      - RUSTDESK_API_RUSTDESK_RELAY_SERVER=127.0.0.1:21117
+      - RUSTDESK_API_RUSTDESK_API_SERVER=http://127.0.0.1:21114
+      - RUSTDESK_API_RUSTDESK_KEY=<DEIN_PUBKEY>
+      # Initial admin credentials – can be changed via CLI
+      - RUSTDESK_API_ADMIN_USER=admin
+      - RUSTDESK_API_ADMIN_PASS=ChangeMe123!
+    volumes:
+      - rustdesk-api-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  rustdesk-hbbs-data:
+    external: true
+  rustdesk-hbbr-data:
+    external: true
+  rustdesk-api-data:
+    external: true
