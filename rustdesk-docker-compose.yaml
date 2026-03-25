@@ -9,7 +9,7 @@ services:
     command: hbbs -r rustdesk.example.com:21117 -k <DEIN_PUBKEY>
     volumes:
       - rustdesk-hbbs-data:/root
-    restart: unless-stopped
+    restart: allways
 
   rustdesk-hbbr:
     image: rustdesk/rustdesk-server:latest
@@ -18,7 +18,7 @@ services:
     command: hbbr -k <DEIN_PUBKEY>
     volumes:
       - rustdesk-hbbr-data:/root
-    restart: unless-stopped
+    restart: allways
 
   rustdesk-api:
     image: lejianwen/rustdesk-api:latest
@@ -35,7 +35,7 @@ services:
       - RUSTDESK_API_ADMIN_PASS=ChangeMe123!
     volumes:
       - rustdesk-api-data:/app/data
-    restart: unless-stopped
+    restart: allways
 
 volumes:
   rustdesk-hbbs-data:
